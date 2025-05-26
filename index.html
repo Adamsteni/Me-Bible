@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeBible - Daily Bible Verses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> 
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">MeBible</div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <a href="{{ url_for('upload_page') }}">Upload Verse</a> <a href="#signup">Sign Up</a>
+            </div>
+            <button class="mobile-menu-btn">Menu</button>
+        </div>
+    </nav>
+
+    <section id="home">
+        <div class="container">
+            <h1>Daily Bible Inspiration</h1>
+            <div class="verse-box">
+                <p id="verse-text" class="verse-text">Loading verse...</p>
+                <p id="verse-reference" class="verse-reference"></p>
+            </div>
+            <button id="new-verse-btn" class="btn">New Verse</button>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <div class="about-content">
+                <p>
+                    MeBible was created with a simple mission: to provide spiritual inspiration through random Bible verses
+                    whenever you need it. Our platform is designed to help you connect with scripture in a meaningful way
+                    throughout your day.
+                </p>
+                <p>
+                    Whether you're looking for guidance, comfort, or simply a moment of reflection, MeBible delivers verses
+                    that can speak to your heart and mind.
+                </p>
+                <p>
+                    Our collection includes verses from both the Old and New Testament, carefully selected to provide wisdom,
+                    encouragement, and spiritual insight.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="form-container">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" placeholder="Your message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-full">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="signup">
+        <div class="container">
+            <h2>Sign Up</h2>
+            <div class="form-container">
+                <p style="text-align: center; margin-bottom: 1.5rem;">
+                    Join our community to receive daily verses and spiritual insights directly to your inbox.
+                </p>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">Name</label>
+                        <input type="text" id="signup-name" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" placeholder="Your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="Your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-full">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p class="copyright">© <span id="current-year"></span> MeBible. All rights reserved.</p>
+            <button class="back-to-top" onclick="scrollToTop()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+                Back to top
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // DOM elements
+        const verseTextElement = document.getElementById('verse-text');
+        const verseReferenceElement = document.getElementById('verse-reference');
+        const newVerseButton = document.getElementById('new-verse-btn');
+        const currentYearElement = document.getElementById('current-year');
+        const mobileMenuButton = document.querySelector('.mobile-menu-btn');
+        const contactForm = document.getElementById('contact-form');
+        const signupForm = document.getElementById('signup-form');
+
+        // Set current year in footer
+        currentYearElement.textContent = new Date().getFullYear();
+
+        // Function to fetch and display a random verse
+        async function getRandomVerse() {
+            verseTextElement.textContent = "Loading verse..."; // Show loading state
+            verseReferenceElement.textContent = "";
+
+            try {
+                const response = await fetch('/get_random_verse'); // Call your Flask endpoint
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const randomVerse = await response.json();
+                verseTextElement.textContent = randomVerse.text;
+                verseReferenceElement.textContent = randomVerse.reference;
+            } catch (error) {
+                console.error('Error fetching verse:', error);
+                verseTextElement.textContent = "Failed to load verse. Please try again.";
+                verseReferenceElement.textContent = "";
+            }
+        }
+
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Mobile menu toggle (simplified version)
+        mobileMenuButton.addEventListener('click', function() {
+            alert('Mobile menu would open here in a complete implementation');
+        });
+
+        // Form submission handlers (simplified)
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Message sent! (This is a demo - no actual message was sent)');
+            contactForm.reset();
+        });
+
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Account created! (This is a demo - no actual account was created)');
+            signupForm.reset();
+        });
+
+        // Initialize with a random verse when the page loads
+        document.addEventListener('DOMContentLoaded', getRandomVerse);
+
+        // Add event listener for new verse button
+        newVerseButton.addEventListener('click', getRandomVerse);
+    </script>
+</body>
+</html>
